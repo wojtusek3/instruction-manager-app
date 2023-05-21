@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,6 +48,26 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 v.getContext().startActivity(intent);
             }
         });
+        holder.editImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), EditStepActivity.class);
+                Instruction instr = instructions.get(holder.getAbsoluteAdapterPosition());
+                intent.putExtra("InstructionName", instr.getName());
+                String[] steps = new String[instr.getSteps().size()];
+                for(int i = 0; i < steps.length; i++){
+                    steps[i] = instr.getSteps().get(i);
+                }
+                intent.putExtra("InstructionSteps", steps);
+                v.getContext().startActivity(intent);
+            }
+        });
+        holder.deleteImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     @Override
@@ -56,12 +77,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     public class ItemViewHolder extends RecyclerView.ViewHolder {
         public TextView nameTextView;
+        public ImageButton editImageButton;
+        public ImageButton deleteImageButton;
         final ItemAdapter itemAdapter;
 
         public ItemViewHolder(@NonNull View itemView, ItemAdapter itemAdapter) {
             super(itemView);
             this.itemAdapter = itemAdapter;
             nameTextView = itemView.findViewById(R.id.nameTextView);
+            editImageButton = itemView.findViewById(R.id.editImageButton);
+            deleteImageButton = itemView.findViewById(R.id.deleteImageButton);
         }
     }
 }

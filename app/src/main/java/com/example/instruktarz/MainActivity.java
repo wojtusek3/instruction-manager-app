@@ -5,8 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import java.util.ArrayList;
 
@@ -14,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Instruction> instructions;
     public ItemAdapter itemAdapter;
     public RecyclerView recyclerView;
+    public ImageButton addInstructionImageButton;
 
     public void getInstructions(){
         instructions = new ArrayList<>();
@@ -32,6 +36,15 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.instructionsRecyclerView);
         recyclerView.setAdapter(itemAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        addInstructionImageButton = findViewById(R.id.addInstructionImageButton);
+        addInstructionImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), EditStepActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override

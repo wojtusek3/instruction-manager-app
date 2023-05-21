@@ -7,6 +7,20 @@
     tools:context=".StepActivity">
 
     <TextView
+        android:id="@+id/instructionNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
+        android:text="Nazwa"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/stepCounterTextView"/>
+
+    <TextView
         android:id="@+id/stepCounterTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,9 +38,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
+        app:layout_constraintTop_toBottomOf="@+id/stepCounterTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/previousStepImageButton">
+        app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,20 +57,19 @@
             <!-- "Jeśli coś jest głupie, ale działa, to nie jest głupie" -->
             <View
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="100dp" />
 
         </LinearLayout>
 
 
     </ScrollView>
 
-
     <ImageButton
         android:id="@+id/nextStepImageButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/scrollView"
         app:srcCompat="@android:drawable/ic_media_next" />
 
     <ImageButton
@@ -64,6 +77,32 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/scrollView"
         app:srcCompat="@android:drawable/ic_media_previous" />
+
+    <ImageButton
+        android:id="@+id/editInstructionImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_edit" />
+
+    <!-- <ImageButton
+        android:id="@+id/closeStepImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/deleteStepImageButton"
+        app:layout_constraintStart_toEndOf="@+id/editStepImageButton"
+        app:srcCompat="@android:drawable/ic_menu_revert" /> -->
+
+    <ImageButton
+        android:id="@+id/deleteInstructionImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
