@@ -2,18 +2,25 @@ package com.example.instruktarz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class EditStepActivity extends AppCompatActivity {
     Integer currentStepID;
     String instructionName;
     ArrayList<String> instructionSteps;
+    ArrayList<Instruction> instructions;
 
     TextView stepCounterTextView;
     ImageButton nextStepImageButton, previousStepImageButton, deleteStepImageButton, saveInstructionImageButton;
@@ -81,7 +88,36 @@ public class EditStepActivity extends AppCompatActivity {
         saveInstructionImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //zapisz dane
+                instructionName = instructionNameEditText.getText().toString().trim();
+                instructionSteps.set(currentStepID, stepEditText.getText().toString());
+                //pobierz instrukcje z pliku
+                instructions = SaveControl.getInstructions(getApplicationContext().getFilesDir());
+                boolean found = false;
+                //zmień kroki jeśli znajdziesz
+                for (Instruction inst : instructions) {
+                    if(inst.getName().equals(instructionName)){
+                        //TODO: zapytaj czy nadpisać instrukcję
+                        Toast.makeText(v.getContext(), "Instruckcja " + instructionName + " została nadpisana", Toast.LENGTH_SHORT).show();
+                        found = true;
+                        inst.setSteps(new ArrayList<>());
+                        for (String step : instructionSteps)
+                            inst.addStep(step);
+                    }
+                }
+                //w przeciwnym wypadku dodaj jako nowa instrukcja
+                if(!found){
+                    instructions.add(new Instruction(instructionName, instructionSteps));
+                }
+                //zapisz instrukcje
+                SaveControl.writeToFile("file.txt", getApplicationContext().getFilesDir(), instructions);
+                Toast.makeText(v.getContext(), "Pomyślnie zapisano instrukcję", Toast.LENGTH_SHORT).show();
 
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
+                //usuń historię aktywności
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                v.getContext().startActivity(intent);
             }
         });
 
@@ -107,4 +143,6 @@ public class EditStepActivity extends AppCompatActivity {
         stepCounterTextView.setText("Krok " + Integer.toString(currentStepID + 1) + " z " + Integer.toString(instructionSteps.size()));
         stepEditText.setText(instructionSteps.get(currentStepID));
     }
+
+    //funkcje do czytania i usuwania z pliku
 }

@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class StepActivity extends AppCompatActivity {
     Integer currentStepID;
@@ -74,6 +77,26 @@ public class StepActivity extends AppCompatActivity {
                     intent.putExtra("InstructionName", instructionName);
                     intent.putExtra("InstructionSteps", instructionSteps);
                     v.getContext().startActivity(intent);
+                }
+            });
+            deleteInstructionImageButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ArrayList<Instruction> instructions = SaveControl.getInstructions(getApplicationContext().getFilesDir());
+                    for (int i = 0; i < instructions.size(); i++) {
+                        if(instructions.get(i).getName().equals(instructionName)){
+                            instructions.remove(i);
+                            Toast.makeText(v.getContext(), "Usunięto instrukcję " + instructionName, Toast.LENGTH_SHORT).show();
+                            SaveControl.writeToFile("file.txt", getApplicationContext().getFilesDir(), instructions);
+
+                            Intent intent = new Intent(v.getContext(), MainActivity.class);
+                            //usuń historię aktywności
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            v.getContext().startActivity(intent);
+                            break;
+                        }
+                    }
                 }
             });
         }
