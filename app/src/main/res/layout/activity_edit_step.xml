@@ -8,10 +8,11 @@
 
     <EditText
         android:id="@+id/instructionNameEditText"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="5dp"
-        android:text="Nazwa"
+        android:text=""
+        android:hint="Nazwa"
         android:textAlignment="center"
         android:textSize="24sp"
         android:ems="10"
@@ -26,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@id/instructionNameTextView"
+        app:layout_constraintTop_toBottomOf="@id/instructionNameEditText"
         app:layout_constraintBottom_toTopOf="@+id/scrollView"
         app:layout_constraintEnd_toStartOf="@+id/nextStepImageButton"
         app:layout_constraintStart_toEndOf="@+id/previousStepImageButton">
@@ -83,6 +84,7 @@
                 android:id="@+id/stepEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="Treść"
                 android:ems="10"
                 android:text="" />
 

@@ -24,6 +24,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         this.instructions = instructions;
     }
 
+    public void setInstructions(ArrayList<Instruction> instructions){
+        this.instructions = instructions;
+    }
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
