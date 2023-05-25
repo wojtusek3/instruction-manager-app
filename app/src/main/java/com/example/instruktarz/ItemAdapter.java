@@ -17,15 +17,19 @@ import java.util.ArrayList;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
     private LayoutInflater inflater;
-    private ArrayList<Instruction> instructions;
+    private ArrayList<Instruction> instructions, oginstructions;
 
-    public ItemAdapter(Context context, ArrayList<Instruction> instructions) {
+    public ItemAdapter(Context context, ArrayList<Instruction> instructions, ArrayList<Instruction> oginstructions) {
         inflater = LayoutInflater.from(context);
+        this.oginstructions = oginstructions;
         this.instructions = instructions;
     }
 
     public void setInstructions(ArrayList<Instruction> instructions){
         this.instructions = instructions;
+    }
+    public void setOriginalInstructions(ArrayList<Instruction> oginstructions){
+        this.oginstructions = oginstructions;
     }
     @NonNull
     @Override
@@ -68,9 +72,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         holder.deleteImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(inflater.getContext(), "Usunięto instrukcję " + instructions.get(holder.getAbsoluteAdapterPosition()).getName(), Toast.LENGTH_SHORT).show();
+                Instruction deleted_inst = instructions.get(holder.getAbsoluteAdapterPosition());
                 instructions.remove(holder.getAbsoluteAdapterPosition());
-                SaveControl.writeToFile("file.txt", inflater.getContext().getFilesDir(), instructions);
+                for(int i = 0; i < oginstructions.size(); i++){
+                    if(oginstructions.get(i).getName().equals(deleted_inst.getName())){
+                        oginstructions.remove(i);
+                        break;
+                    }
+                }
+                SaveControl.writeToFile("file.txt", inflater.getContext().getFilesDir(), oginstructions);
+                Toast.makeText(inflater.getContext(), "Usunięto instrukcję " + deleted_inst.getName(), Toast.LENGTH_SHORT).show();
                 notifyDataSetChanged();
             }
         });

@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         instructions = SaveControl.getInstructions(getApplicationContext().getFilesDir());
         filteredInstructions = instructions;
-        itemAdapter = new ItemAdapter(this, filteredInstructions);
+        itemAdapter = new ItemAdapter(this, filteredInstructions, instructions);
         recyclerView = findViewById(R.id.instructionsRecyclerView);
         recyclerView.setAdapter(itemAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
