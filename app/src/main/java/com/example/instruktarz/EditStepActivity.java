@@ -23,7 +23,7 @@ public class EditStepActivity extends AppCompatActivity {
     ArrayList<Instruction> instructions;
 
     TextView stepCounterTextView;
-    ImageButton nextStepImageButton, previousStepImageButton, deleteStepImageButton, saveInstructionImageButton;
+    ImageButton nextStepImageButton, previousStepImageButton, deleteStepImageButton, saveInstructionImageButton, closeInstructionImageButton;
     EditText stepEditText, instructionNameEditText;
 
     @Override
@@ -37,7 +37,7 @@ public class EditStepActivity extends AppCompatActivity {
         stepCounterTextView = findViewById(R.id.stepCounterTextView);
         stepEditText = findViewById(R.id.stepEditText);
 
-        //przejdź na następny krok, jeśli nie ma: dodaj
+        //przycisk - przejdź na następny krok, jeśli nie ma: dodaj
         nextStepImageButton = findViewById(R.id.nextStepImageButton);
         nextStepImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,7 +51,7 @@ public class EditStepActivity extends AppCompatActivity {
             }
         });
 
-        //przejdź na poprzedni krok
+        //przycisk - przejdź na poprzedni krok
         previousStepImageButton = findViewById(R.id.previousStepImageButton);
         previousStepImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,7 +66,7 @@ public class EditStepActivity extends AppCompatActivity {
             }
         });
 
-        //usuń zaznaczony krok
+        //przycisk - usuń zaznaczony krok
         deleteStepImageButton = findViewById(R.id.deleteStepImageButton);
         deleteStepImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,7 +83,7 @@ public class EditStepActivity extends AppCompatActivity {
             }
         });
 
-        //zapisz instrukcję
+        //przycisk - zapisz instrukcję
         saveInstructionImageButton = findViewById(R.id.saveInstructionImageButton);
         saveInstructionImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +123,19 @@ public class EditStepActivity extends AppCompatActivity {
                 else{
                     Toast.makeText(v.getContext(), "Nie nazwy podano instrukcji!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        //przycisk - wyjdź do menu głównego
+        closeInstructionImageButton = findViewById(R.id.closeInstructionImageButton);
+        closeInstructionImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
+                //usuń historię aktywności
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                v.getContext().startActivity(intent);
             }
         });
 

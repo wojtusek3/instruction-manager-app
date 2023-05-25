@@ -17,7 +17,7 @@ public class StepActivity extends AppCompatActivity {
     String[] instructionSteps;
 
     TextView instructionNameTextView, stepCounterTextView, stepContentTextView;
-    ImageButton nextImageButton, previousImageButton, editInstructionImageButton, deleteInstructionImageButton;
+    ImageButton nextImageButton, previousImageButton, editInstructionImageButton, deleteInstructionImageButton, closeInstructionImageButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +32,17 @@ public class StepActivity extends AppCompatActivity {
         previousImageButton = findViewById(R.id.previousStepImageButton);
         editInstructionImageButton = findViewById(R.id.editInstructionImageButton);
         deleteInstructionImageButton = findViewById(R.id.deleteInstructionImageButton);
+        closeInstructionImageButton = findViewById(R.id.closeInstructionImageButton);
+        closeInstructionImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MainActivity.class);
+                //usuń historię aktywności
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                v.getContext().startActivity(intent);
+            }
+        });
 
         //pobierz dane z intencji
         currentStepID = getIntent().getIntExtra("CurrentStepID",0);
