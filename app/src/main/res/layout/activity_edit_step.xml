@@ -90,7 +90,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            app:srcCompat="@android:drawable/ic_menu_revert" />
+            app:srcCompat="@android:drawable/ic_menu_revert"
+            android:tooltipText="Wróć do listy instrukcji" />
 
         <View
             android:layout_width="wrap_content"

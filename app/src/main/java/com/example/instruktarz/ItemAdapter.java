@@ -1,7 +1,10 @@
 package com.example.instruktarz;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -73,16 +76,27 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             @Override
             public void onClick(View v) {
                 Instruction deleted_inst = instructions.get(holder.getAbsoluteAdapterPosition());
-                instructions.remove(holder.getAbsoluteAdapterPosition());
-                for(int i = 0; i < oginstructions.size(); i++){
-                    if(oginstructions.get(i).getName().equals(deleted_inst.getName())){
-                        oginstructions.remove(i);
-                        break;
+                AlertDialog.Builder builder = new AlertDialog.Builder(inflater.getContext());
+                builder.setMessage("Czy na pewno chcesz usunąć instrukcję \"" + deleted_inst.getName() + "\"?");
+
+                builder.setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        instructions.remove(holder.getAbsoluteAdapterPosition());
+                        for(int i = 0; i < oginstructions.size(); i++){
+                            if(oginstructions.get(i).getName().equals(deleted_inst.getName())){
+                                oginstructions.remove(i);
+                                break;
+                            }
+                        }
+                        SaveControl.writeToFile("file.txt", inflater.getContext().getFilesDir(), oginstructions);
+                        Toast.makeText(inflater.getContext(), "Usunięto instrukcję \"" + deleted_inst.getName() + "\"", Toast.LENGTH_SHORT).show();
+                        notifyDataSetChanged();
                     }
-                }
-                SaveControl.writeToFile("file.txt", inflater.getContext().getFilesDir(), oginstructions);
-                Toast.makeText(inflater.getContext(), "Usunięto instrukcję " + deleted_inst.getName(), Toast.LENGTH_SHORT).show();
-                notifyDataSetChanged();
+                });
+
+                builder.setNegativeButton("Nie", null);
+                builder.show();
             }
         });
     }

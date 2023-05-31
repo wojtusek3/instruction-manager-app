@@ -2,6 +2,8 @@ package com.example.instruktarz;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -37,32 +39,37 @@ public class EditStepActivity extends AppCompatActivity {
         stepCounterTextView = findViewById(R.id.stepCounterTextView);
         stepEditText = findViewById(R.id.stepEditText);
 
-        //przycisk - przejdź na następny krok, jeśli nie ma: dodaj
+        //przycisk - przejdź na następny krok; jeśli nie ma to dodaj
         nextStepImageButton = findViewById(R.id.nextStepImageButton);
         nextStepImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(currentStepID+1 >= instructionSteps.size())
                     instructionSteps.add("");
-                instructionSteps.set(currentStepID, stepEditText.getText().toString());
+                instructionSteps.set(currentStepID, stepEditText.getText().toString().trim());
                 currentStepID++;
                 stepCounterTextView.setText("Krok " + Integer.toString(currentStepID + 1) + " z " + Integer.toString(instructionSteps.size()));
                 stepEditText.setText(instructionSteps.get(currentStepID));
             }
         });
 
-        //przycisk - przejdź na poprzedni krok
+        //przycisk - przejdź na poprzedni krok; jeśli nie ma to dodaj
         previousStepImageButton = findViewById(R.id.previousStepImageButton);
         previousStepImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentStepID-1 >= 0){
-                    instructionSteps.set(currentStepID, stepEditText.getText().toString());
-                    currentStepID--;
-                    stepCounterTextView.setText("Krok " + Integer.toString(currentStepID + 1) + " z " + Integer.toString(instructionSteps.size()));
-                    stepEditText.setText(instructionSteps.get(currentStepID));
+                instructionSteps.set(currentStepID, stepEditText.getText().toString().trim());
+                if(currentStepID == 0){
+                    instructionSteps.add("");
+                    //przenieś instrukcje do tyłu
+                    for(int i=instructionSteps.size()-1;i>0;i--){
+                        instructionSteps.set(i, instructionSteps.get(i-1));
+                    }
+                    instructionSteps.set(0, "");
                 }
-
+                else currentStepID--;
+                stepCounterTextView.setText("Krok " + Integer.toString(currentStepID + 1) + " z " + Integer.toString(instructionSteps.size()));
+                stepEditText.setText(instructionSteps.get(currentStepID));
             }
         });
 
@@ -90,16 +97,61 @@ public class EditStepActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //zapisz dane
                 instructionName = instructionNameEditText.getText().toString().trim();
-                instructionSteps.set(currentStepID, stepEditText.getText().toString());
+                instructionSteps.set(currentStepID, stepEditText.getText().toString().trim());
+
                 if(!instructionName.equals("")){
+
+                    //usuń wszystkie puste kroki
+                    for(int i = 0; i < instructionSteps.size(); i++) {
+                        if(instructionSteps.get(i).equals("")){
+                            instructionSteps.remove(i);
+                            i--;
+                        }
+                    }
+                    //jeśli nie ma kroków, nie idź dalej
+                    if(instructionSteps.size() == 0) {
+                        Toast.makeText(v.getContext(), "Instrukcja nie zawiera zawartości!", Toast.LENGTH_SHORT).show();
+
+                        currentStepID = 0;
+                        instructionSteps.add("");
+                        stepCounterTextView.setText("Krok " + Integer.toString(currentStepID + 1) + " z " + Integer.toString(instructionSteps.size()));
+                        stepEditText.setText(instructionSteps.get(currentStepID));
+
+                        return;
+                    }
+
+                    //zaktualizuj lub ustaw na ostani wypełniony krok, żeby uniknąć błędów
+                    if(currentStepID > instructionSteps.size()-1) currentStepID = instructionSteps.size()-1;
+                    stepCounterTextView.setText("Krok " + Integer.toString(currentStepID + 1) + " z " + Integer.toString(instructionSteps.size()));
+                    stepEditText.setText(instructionSteps.get(currentStepID));
+
+                    //builder do okienka potwierdzającego zapisanie instrukcji
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    builder.setPositiveButton("Potwierdź", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //zapisz instrukcje
+                            SaveControl.writeToFile("file.txt", getApplicationContext().getFilesDir(), instructions);
+                            Toast.makeText(v.getContext(), "Pomyślnie zapisano instrukcję \"" + instructionName + "\"", Toast.LENGTH_SHORT).show();
+
+                            //intencja do głównego widoku
+                            Intent intent = new Intent(v.getContext(), MainActivity.class);
+                            //usuń historię aktywności
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            v.getContext().startActivity(intent);
+                        }
+                    });
+                    builder.setNegativeButton("Anuluj", null);
+
                     //pobierz instrukcje z pliku
                     instructions = SaveControl.getInstructions(getApplicationContext().getFilesDir());
                     boolean found = false;
                     //zmień kroki jeśli znajdziesz
                     for (Instruction inst : instructions) {
                         if(inst.getName().equals(instructionName)){
-                            //TODO: zapytaj czy nadpisać instrukcję
-                            Toast.makeText(v.getContext(), "Instruckcja " + instructionName + " została nadpisana", Toast.LENGTH_SHORT).show();
+                            builder.setMessage("Instukcja \"" + instructionName + "\" zostanie nadpisana.");
+                            //Toast.makeText(v.getContext(), "Instruckcja " + instructionName + " została nadpisana", Toast.LENGTH_SHORT).show();
                             found = true;
                             inst.setSteps(new ArrayList<>());
                             for (String step : instructionSteps)
@@ -109,16 +161,11 @@ public class EditStepActivity extends AppCompatActivity {
                     //w przeciwnym wypadku dodaj jako nowa instrukcja
                     if(!found){
                         instructions.add(new Instruction(instructionName, instructionSteps));
+                        builder.setMessage("Zostanie dodana nowa instrukcja \"" + instructionName + "\".");
                     }
-                    //zapisz instrukcje
-                    SaveControl.writeToFile("file.txt", getApplicationContext().getFilesDir(), instructions);
-                    Toast.makeText(v.getContext(), "Pomyślnie zapisano instrukcję", Toast.LENGTH_SHORT).show();
 
-                    Intent intent = new Intent(v.getContext(), MainActivity.class);
-                    //usuń historię aktywności
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    v.getContext().startActivity(intent);
+                    //wyświetl okienko potwierdzenia zapisu pliku
+                    builder.show();
                 }
                 else{
                     Toast.makeText(v.getContext(), "Nie nazwy podano instrukcji!", Toast.LENGTH_SHORT).show();

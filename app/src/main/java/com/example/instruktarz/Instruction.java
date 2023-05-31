@@ -53,6 +53,16 @@ public class Instruction {
         return string;
     }
 
+    public String shareToString() {
+        String string = "";
+        string = string + name + "\n";
+        for (int i = 0; i < steps.size(); i++){
+            string = string + "Krok " + Integer.toString(i+1) + ":\n" + steps.get(i) + "\n";
+        }
+
+        return string;
+    }
+
     public static Instruction convertStringToInstruction(String inst){
         Instruction instruction = new Instruction();
         try{

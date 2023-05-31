@@ -27,12 +27,14 @@
             android:id="@+id/editImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:tooltipText="Edytuj instrukcję"
             app:srcCompat="@android:drawable/ic_menu_edit" />
 
         <ImageButton
             android:id="@+id/deleteImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:tooltipText="Usuń instrukcję"
             app:srcCompat="@android:drawable/ic_menu_delete" />
     </LinearLayout>
 
